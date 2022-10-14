@@ -1,27 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { User, Post } = require('../../models');
-
-router.get('/', async (req, res) => {
-  try {
-    const userData = await User.findAll({
-      attributes: {
-        exclude: "password"
-      },
-      include: [
-        {
-          model: Post,
-          attributes: ["title", "contents"]
-        }
-      ]
-    })
-    res.status(200).json(userData);
-  }
-  catch (err) {
-    res.status(404).json(err);
-  }
-}
-)
+const { User } = require('../../models');
 
 router.post('/', async (req, res) => {
   try {
@@ -61,7 +40,7 @@ router.post('/login', async (req, res) => {
     req.session.save(() => {
       req.session.user_id = userData.id;
       req.session.logged_in = true;
-      
+
       res.json({ user: userData, message: 'You are now logged in!' });
     });
 
@@ -79,6 +58,5 @@ router.post('/logout', (req, res) => {
     res.status(404).end();
   }
 });
-
 
 module.exports = router;
